@@ -135,9 +135,9 @@ def parse_deals(raw: list[dict]) -> list[dict]:
                 "is_weekend":  is_weekend_trip(depart, ret),
                 "stops":       item.get("number_of_changes", "?"),
                 "book_url":    (
-                    f"https://www.aviasales.com/search/"
-                    f"{ORIGIN}{depart.strftime('%d%m')}"
-                    f"{destination}{ret.strftime('%d%m')}1"
+                    f"https://www.google.com/flights#flt="
+                    f"{ORIGIN}.{destination}.{depart.isoformat()}*"
+                    f"{destination}.{ORIGIN}.{ret.isoformat()};c:USD;e:1;s:0*1;sd:1;t:f"
                 ),
             })
         except (KeyError, ValueError, TypeError) as e:
@@ -188,7 +188,10 @@ def format_email(deals: list[dict]) -> tuple[str, str]:
         prefix = "[Weekend] " if weekend_only else ""
         subject = f"{prefix}✈ {count} Flight Deals from {ORIGIN} (≤ ${MAX_PRICE}/pp)"
 
-    lines = [f"Flight deals from Dulles (IAD) under ${MAX_PRICE}/person round trip:\n"]
+    lines = [
+        f"Flight deals from Dulles (IAD) under ${MAX_PRICE}/person round trip:",
+        "⚠ Prices are cached — act fast, they may have changed. Always verify before booking.\n",
+    ]
     for d in deals:
         weekend_tag = " [WEEKEND]" if d["is_weekend"] else ""
         stops_label = "Nonstop" if d["stops"] == 0 else f"{d['stops']} stop(s)"
