@@ -6,6 +6,7 @@ Uses fast-flights to scrape real-time Google Flights prices.
 
 import json
 import os
+import random
 import smtplib
 import sys
 import time
@@ -79,16 +80,15 @@ def candidate_trips() -> list[tuple[date, date]]:
     for offset in range(7, 29):
         d = today + timedelta(days=offset)
         if d.weekday() in (0, 4):  # Mon or Fri
-            ret = d + timedelta(days=3)
-            trips.append((d, ret))
+            for nights in (2, 3, 4, 5, 6):
+                trips.append((d, d + timedelta(days=nights)))
 
     # Long window: 5–12 weeks out — check every other Friday
     for offset in range(35, 85, 14):
         d = today + timedelta(days=offset)
-        # snap to nearest Friday
-        d += timedelta(days=(4 - d.weekday()) % 7)
-        ret = d + timedelta(days=2)
-        trips.append((d, ret))
+        d += timedelta(days=(4 - d.weekday()) % 7)  # snap to nearest Friday
+        for nights in (2, 3, 4, 5, 6):
+            trips.append((d, d + timedelta(days=nights)))
 
     return trips
 
@@ -267,15 +267,17 @@ def main() -> None:
 
     max_price_global = max(int(s["max_price"]) for s in subscribers)
     trips = candidate_trips()
+    destinations = DESTINATIONS[:]
+    random.shuffle(destinations)
     seen = load_seen()
     today_str = date.today().isoformat()
     emails_sent = 0
 
-    print(f"[INFO] Checking {len(DESTINATIONS)} destinations × {len(trips)} date pairs...")
+    print(f"[INFO] Checking {len(destinations)} destinations × {len(trips)} date pairs...")
 
     found_deals: list[dict] = []
 
-    for destination in DESTINATIONS:
+    for destination in destinations:
         for depart, ret in trips:
             nights = (ret - depart).days
             price = get_cheapest_price(ORIGIN, destination, depart, ret)
