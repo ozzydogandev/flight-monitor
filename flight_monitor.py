@@ -114,7 +114,10 @@ def fetch_subscribers() -> list[dict]:
 def load_seen() -> dict:
     if not SEEN_FILE.exists():
         return {}
-    return json.loads(SEEN_FILE.read_text())
+    try:
+        return json.loads(SEEN_FILE.read_text())
+    except (json.JSONDecodeError, ValueError):
+        return {}
 
 
 def save_seen(seen: dict) -> None:
