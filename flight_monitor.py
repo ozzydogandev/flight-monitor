@@ -19,7 +19,7 @@ from pathlib import Path
 # ── Configuration ──────────────────────────────────────────────────────────────
 
 ORIGIN = "IAD"
-MAX_PRICE = 100     # USD per person round trip
+MAX_PRICE = 50      # USD per person round trip
 MIN_NIGHTS = 2
 CURRENCY = "usd"
 
@@ -262,9 +262,6 @@ def main() -> None:
         sys.exit(1)
 
     print(f"[INFO] Raw results: {len(raw)}")
-    if raw:
-        for item in raw[:5]:
-            print(f"[DEBUG] {item.get('destination')} | ${item.get('value')} | {item.get('depart_date')} → {item.get('return_date')}")
     deals = parse_deals(raw)
     print(f"[INFO] Matching deals (US, ≤${MAX_PRICE}, ≥{MIN_NIGHTS} nights): {len(deals)}")
 
