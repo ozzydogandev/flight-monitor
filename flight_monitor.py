@@ -127,9 +127,10 @@ def parse_deals(raw: list[dict], max_price: int) -> list[dict]:
                 "is_weekend":  is_weekend_trip(depart, ret),
                 "stops":       item.get("number_of_changes", "?"),
                 "book_url": (
-                    f"https://www.google.com/flights#flt="
-                    f"{ORIGIN}.{destination}.{depart.isoformat()}*"
-                    f"{destination}.{ORIGIN}.{ret.isoformat()};c:USD;e:1;s:0*1;sd:1;t:f"
+                    f"https://www.kayak.com/flights/"
+                    f"{ORIGIN}-{destination}/"
+                    f"{depart.strftime('%Y-%m-%d')}/"
+                    f"{ret.strftime('%Y-%m-%d')}/1adults"
                 ),
             })
         except (KeyError, ValueError, TypeError) as e:
