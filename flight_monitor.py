@@ -85,7 +85,9 @@ def get_cheapest_price(origin: str, destination: str, depart: date, ret: date) -
         for f in result.flights:
             if f.price:
                 try:
-                    prices.append(float(f.price.replace("$", "").replace(",", "")))
+                    p = float(f.price.replace("$", "").replace(",", ""))
+                    if p > 0:
+                        prices.append(p)
                 except ValueError:
                     pass
         return min(prices) if prices else None
