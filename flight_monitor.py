@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Flight Deal Monitor — IAD → Anywhere in the US
-Uses Aviasales Data API to find round-trip deals <= $50/person
-with at least 2 nights stay, then sends email alerts.
+Uses Aviasales Data API to find round-trip deals per subscriber's price cap,
+then sends personalized email alerts.
 """
 
 import json
@@ -19,11 +19,9 @@ from pathlib import Path
 # ── Configuration ──────────────────────────────────────────────────────────────
 
 ORIGIN = "IAD"
-MAX_PRICE = 60      # USD per person round trip
 MIN_NIGHTS = 2
 CURRENCY = "usd"
 
-# Search windows (days from today)
 SHORT_WINDOW_START = 7
 SHORT_WINDOW_END   = 28
 LONG_WINDOW_START  = 30
@@ -31,13 +29,13 @@ LONG_WINDOW_END    = 90
 
 SEEN_FILE = Path(__file__).parent / "seen_deals.json"
 
-# Weekend: depart Thu(3) or Fri(4), return Sun(6) or Mon(0)
 WEEKEND_DEPART_DAYS = {3, 4}
 WEEKEND_RETURN_DAYS = {6, 0}
 
 AVIASALES_API_URL = "https://api.travelpayouts.com/v2/prices/latest"
+SUPABASE_URL      = os.getenv("SUPABASE_URL", "")
+SUPABASE_KEY      = os.getenv("SUPABASE_SERVICE_KEY", "")
 
-# Known US airport codes (top destinations from IAD)
 US_AIRPORTS = {
     "ATL", "LAX", "ORD", "DFW", "DEN", "JFK", "SFO", "SEA", "LAS", "MCO",
     "EWR", "CLT", "PHX", "MIA", "IAH", "BOS", "MSP", "DTW", "FLL", "PHL",
@@ -49,6 +47,19 @@ US_AIRPORTS = {
 }
 
 
+# ── Subscribers ────────────────────────────────────────────────────────────────
+
+def fetch_subscribers() -> list[dict]:
+    """Return all active subscribers from Supabase."""
+    url = f"{SUPABASE_URL}/rest/v1/subscribers?active=eq.true&select=email,max_price,origin"
+    req = urllib.request.Request(url, headers={
+        "apikey":        SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+    })
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        return json.loads(resp.read())
+
+
 # ── Date helpers ───────────────────────────────────────────────────────────────
 
 def is_weekend_trip(depart: date, return_date: date) -> bool:
@@ -58,21 +69,16 @@ def is_weekend_trip(depart: date, return_date: date) -> bool:
     )
 
 
-def in_window(d: date, start_offset: int, end_offset: int) -> bool:
-    today = date.today()
-    return today + timedelta(days=start_offset) <= d <= today + timedelta(days=end_offset)
-
-
 # ── Aviasales Data API ─────────────────────────────────────────────────────────
 
-def fetch_raw_prices() -> list[dict]:
+def fetch_raw_prices(origin: str) -> list[dict]:
     token = os.environ["AVIASALES_TOKEN"]
     params = urllib.parse.urlencode({
-        "origin":    ORIGIN,
-        "currency":  CURRENCY,
-        "one_way":   "false",
-        "limit":     1000,
-        "token":     token,
+        "origin":   origin,
+        "currency": CURRENCY,
+        "one_way":  "false",
+        "limit":    1000,
+        "token":    token,
     })
     url = f"{AVIASALES_API_URL}?{params}"
     with urllib.request.urlopen(url, timeout=30) as resp:
@@ -80,20 +86,7 @@ def fetch_raw_prices() -> list[dict]:
     return body.get("data", [])
 
 
-def parse_deals(raw: list[dict]) -> list[dict]:
-    """
-    Each raw item looks like:
-    {
-      "origin":          "IAD",
-      "destination":     "MIA",
-      "depart_date":     "2026-06-06",
-      "return_date":     "2026-06-09",
-      "value":           38,
-      "number_of_changes": 0,
-      "found_at":        "2026-05-21T10:00:00Z",
-      ...
-    }
-    """
+def parse_deals(raw: list[dict], max_price: int) -> list[dict]:
     today = date.today()
     short_start = today + timedelta(days=SHORT_WINDOW_START)
     long_end    = today + timedelta(days=LONG_WINDOW_END)
@@ -106,7 +99,7 @@ def parse_deals(raw: list[dict]) -> list[dict]:
                 continue
 
             price = float(item.get("value", 9999))
-            if price > MAX_PRICE:
+            if price > max_price:
                 continue
 
             depart_str = item.get("depart_date", "")
@@ -117,7 +110,6 @@ def parse_deals(raw: list[dict]) -> list[dict]:
             depart = date.fromisoformat(depart_str)
             ret    = date.fromisoformat(return_str)
 
-            # Must fall within one of our two search windows
             if not (short_start <= depart <= long_end):
                 continue
 
@@ -134,7 +126,7 @@ def parse_deals(raw: list[dict]) -> list[dict]:
                 "price":       price,
                 "is_weekend":  is_weekend_trip(depart, ret),
                 "stops":       item.get("number_of_changes", "?"),
-                "book_url":    (
+                "book_url": (
                     f"https://www.google.com/flights#flt="
                     f"{ORIGIN}.{destination}.{depart.isoformat()}*"
                     f"{destination}.{ORIGIN}.{ret.isoformat()};c:USD;e:1;s:0*1;sd:1;t:f"
@@ -148,31 +140,23 @@ def parse_deals(raw: list[dict]) -> list[dict]:
 
 # ── Deduplication ──────────────────────────────────────────────────────────────
 
-def load_seen() -> set[str]:
+def load_seen() -> dict:
     if not SEEN_FILE.exists():
-        return set()
-    data = json.loads(SEEN_FILE.read_text())
-    today_str = date.today().isoformat()
-    return {k for k, v in data.items() if v == today_str}
+        return {}
+    return json.loads(SEEN_FILE.read_text())
 
 
-def save_seen(seen: set[str]) -> None:
-    existing: dict = {}
-    if SEEN_FILE.exists():
-        existing = json.loads(SEEN_FILE.read_text())
-    today_str = date.today().isoformat()
-    for key in seen:
-        existing[key] = today_str
-    SEEN_FILE.write_text(json.dumps(existing, indent=2))
+def save_seen(seen: dict) -> None:
+    SEEN_FILE.write_text(json.dumps(seen, indent=2, default=str))
 
 
-def deal_key(deal: dict) -> str:
-    return f"{deal['destination']}_{deal['depart']}_{deal['return']}"
+def deal_key(email: str, deal: dict) -> str:
+    return f"{email}_{deal['destination']}_{deal['depart']}_{deal['return']}"
 
 
 # ── Email ──────────────────────────────────────────────────────────────────────
 
-def format_email(deals: list[dict]) -> tuple[str, str]:
+def format_email(deals: list[dict], max_price: int) -> tuple[str, str]:
     weekend_only = all(d["is_weekend"] for d in deals)
     count = len(deals)
 
@@ -186,10 +170,10 @@ def format_email(deals: list[dict]) -> tuple[str, str]:
         )
     else:
         prefix = "[Weekend] " if weekend_only else ""
-        subject = f"{prefix}✈ {count} Flight Deals from {ORIGIN} (≤ ${MAX_PRICE}/pp)"
+        subject = f"{prefix}✈ {count} Flight Deals from {ORIGIN} (≤ ${max_price}/pp)"
 
     lines = [
-        f"Flight deals from Dulles (IAD) under ${MAX_PRICE}/person round trip:",
+        f"Flight deals from Dulles (IAD) under ${max_price}/person round trip:",
         "⚠ Prices are cached — act fast, they may have changed. Always verify before booking.\n",
     ]
     for d in deals:
@@ -211,24 +195,23 @@ def format_email(deals: list[dict]) -> tuple[str, str]:
     return subject, "\n".join(lines)
 
 
-def send_email(subject: str, body: str) -> None:
+def send_email(to: str, subject: str, body: str) -> None:
     gmail_address = os.environ["GMAIL_ADDRESS"]
     app_password  = os.environ["GMAIL_APP_PASSWORD"]
-    notify_email  = os.environ["NOTIFY_EMAIL"]
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"]    = gmail_address
-    msg["To"]      = notify_email
+    msg["To"]      = to
     msg.attach(MIMEText(body, "plain"))
 
     with smtplib.SMTP("smtp.gmail.com", 587) as server:
         server.ehlo()
         server.starttls()
         server.login(gmail_address, app_password)
-        server.sendmail(gmail_address, notify_email, msg.as_string())
+        server.sendmail(gmail_address, to, msg.as_string())
 
-    print(f"[OK] Email sent: {subject}")
+    print(f"[OK] Email → {to}: {subject}")
 
 
 # ── Test mode ──────────────────────────────────────────────────────────────────
@@ -237,16 +220,17 @@ def send_test_email() -> None:
     fake = {
         "origin":      "IAD",
         "destination": "MIA",
-        "depart":      date.today() + timedelta(days=9),   # Friday
-        "return":      date.today() + timedelta(days=11),  # Sunday
+        "depart":      date.today() + timedelta(days=9),
+        "return":      date.today() + timedelta(days=11),
         "nights":      2,
         "price":       38.0,
         "is_weekend":  True,
         "stops":       0,
-        "book_url":    "https://www.aviasales.com",
+        "book_url":    "https://www.google.com/flights",
     }
-    subject, body = format_email([fake])
-    send_email("[TEST] " + subject, body)
+    notify = os.environ["NOTIFY_EMAIL"]
+    subject, body = format_email([fake], 60)
+    send_email(notify, "[TEST] " + subject, body)
 
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -257,38 +241,66 @@ def main() -> None:
         send_test_email()
         return
 
+    # Fetch all active subscribers
+    if SUPABASE_URL and SUPABASE_KEY:
+        try:
+            subscribers = fetch_subscribers()
+            print(f"[INFO] Subscribers: {len(subscribers)}")
+        except Exception as e:
+            print(f"[WARN] Could not fetch subscribers: {e} — falling back to NOTIFY_EMAIL")
+            subscribers = [{
+                "email":     os.environ["NOTIFY_EMAIL"],
+                "max_price": int(os.getenv("MAX_PRICE", "60")),
+                "origin":    ORIGIN,
+            }]
+    else:
+        subscribers = [{
+            "email":     os.environ["NOTIFY_EMAIL"],
+            "max_price": int(os.getenv("MAX_PRICE", "60")),
+            "origin":    ORIGIN,
+        }]
+
     print("[INFO] Fetching latest prices from Aviasales...")
     try:
-        raw = fetch_raw_prices()
+        raw = fetch_raw_prices(ORIGIN)
     except Exception as e:
         print(f"[ERROR] Failed to fetch prices: {e}")
         sys.exit(1)
 
     print(f"[INFO] Raw results: {len(raw)}")
-    deals = parse_deals(raw)
-    print(f"[INFO] Matching deals (US, ≤${MAX_PRICE}, ≥{MIN_NIGHTS} nights): {len(deals)}")
 
     seen = load_seen()
-    new_deals = []
-    for deal in deals:
-        key = deal_key(deal)
-        if key not in seen:
-            new_deals.append(deal)
-            seen.add(key)
+    today_str = date.today().isoformat()
+    emails_sent = 0
 
-    print(f"[INFO] New (not yet notified today): {len(new_deals)}")
+    for sub in subscribers:
+        email     = sub["email"]
+        max_price = sub["max_price"]
 
-    if new_deals:
+        deals = parse_deals(raw, max_price)
+        new_deals = []
+        for deal in deals:
+            key = deal_key(email, deal)
+            if seen.get(key) != today_str:
+                new_deals.append(deal)
+                seen[key] = today_str
+
+        if not new_deals:
+            print(f"[INFO] No new deals for {email}")
+            continue
+
         if len(new_deals) <= 3:
             for deal in new_deals:
-                subject, body = format_email([deal])
-                send_email(subject, body)
+                subject, body = format_email([deal], max_price)
+                send_email(email, subject, body)
+                emails_sent += 1
         else:
-            subject, body = format_email(new_deals)
-            send_email(subject, body)
-        save_seen(seen)
-    else:
-        print("[INFO] No new deals found.")
+            subject, body = format_email(new_deals, max_price)
+            send_email(email, subject, body)
+            emails_sent += 1
+
+    save_seen(seen)
+    print(f"[INFO] Done. Emails sent: {emails_sent}")
 
 
 if __name__ == "__main__":

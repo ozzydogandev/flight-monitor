@@ -25,10 +25,12 @@ jobs:
       - name: Run flight monitor
         run: python flight_monitor.py
         env:
-          AVIASALES_TOKEN:    ${{ secrets.AVIASALES_TOKEN }}
-          GMAIL_ADDRESS:      ${{ secrets.GMAIL_ADDRESS }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          NOTIFY_EMAIL:       ${{ secrets.NOTIFY_EMAIL }}
+          AVIASALES_TOKEN:      ${{ secrets.AVIASALES_TOKEN }}
+          GMAIL_ADDRESS:        ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD:   ${{ secrets.GMAIL_APP_PASSWORD }}
+          NOTIFY_EMAIL:         ${{ secrets.NOTIFY_EMAIL }}
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
 
       - name: Commit seen deals cache
         run: |
