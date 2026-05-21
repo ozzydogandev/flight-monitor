@@ -19,7 +19,7 @@ from pathlib import Path
 # ── Configuration ──────────────────────────────────────────────────────────────
 
 ORIGIN = "IAD"
-MAX_PRICE = 50      # USD per person round trip
+MAX_PRICE = 60      # USD per person round trip
 MIN_NIGHTS = 2
 CURRENCY = "usd"
 
