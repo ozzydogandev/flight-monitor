@@ -1,9 +1,7 @@
 name: Flight Deal Monitor
 
 on:
-  schedule:
-    - cron: '0 * * * *'   # every hour
-  workflow_dispatch:          # manual trigger for testing
+  workflow_dispatch:          # triggered by cron-job.org every hour
 
 jobs:
   monitor:
