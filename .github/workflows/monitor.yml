@@ -36,6 +36,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main || true
           git add seen_deals.json || true
           git diff --staged --quiet || git commit -m "chore: update seen deals cache [skip ci]"
           git push || true
