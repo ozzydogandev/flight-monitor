@@ -1,0 +1,1 @@
+# No third-party dependencies — uses only Python stdlib (urllib, smtplib, json)
