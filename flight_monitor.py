@@ -38,6 +38,35 @@ DESTINATIONS = [
     "TPA", "LAX", "AUS", "MSY", "PDX", "BNA", "RDU", "PHX", "HNL",
 ]
 
+AIRPORT_NAMES = {
+    "IAD": "Dulles, VA",
+    "ATL": "Atlanta, GA",
+    "BOS": "Boston, MA",
+    "ORD": "Chicago, IL",
+    "DFW": "Dallas, TX",
+    "DEN": "Denver, CO",
+    "JFK": "New York, NY",
+    "SFO": "San Francisco, CA",
+    "SEA": "Seattle, WA",
+    "LAS": "Las Vegas, NV",
+    "MCO": "Orlando, FL",
+    "CLT": "Charlotte, NC",
+    "MIA": "Miami, FL",
+    "IAH": "Houston, TX",
+    "MSP": "Minneapolis, MN",
+    "FLL": "Fort Lauderdale, FL",
+    "SLC": "Salt Lake City, UT",
+    "TPA": "Tampa, FL",
+    "LAX": "Los Angeles, CA",
+    "AUS": "Austin, TX",
+    "MSY": "New Orleans, LA",
+    "PDX": "Portland, OR",
+    "BNA": "Nashville, TN",
+    "RDU": "Raleigh, NC",
+    "PHX": "Phoenix, AZ",
+    "HNL": "Honolulu, HI",
+}
+
 
 # ── Date helpers ───────────────────────────────────────────────────────────────
 
@@ -152,9 +181,13 @@ def format_email(deals: list[dict], max_price: int) -> tuple[str, str]:
     ]
     for d in deals:
         weekend_tag = " [WEEKEND]" if d["is_weekend"] else ""
+        from_city = AIRPORT_NAMES.get(ORIGIN, ORIGIN)
+        to_city   = AIRPORT_NAMES.get(d['destination'], d['destination'])
         lines += [
             "─" * 50,
             f"  Route:   {ORIGIN} → {d['destination']}{weekend_tag}",
+            f"  From:    {from_city}",
+            f"  To:      {to_city}",
             f"  Depart:  {d['depart'].strftime('%A, %B %-d %Y')}",
             f"  Return:  {d['return'].strftime('%A, %B %-d %Y')}",
             f"  Stay:    {d['nights']} nights",
