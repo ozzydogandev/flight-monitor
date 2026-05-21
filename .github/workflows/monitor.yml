@@ -22,10 +22,12 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
       - name: Run flight monitor
         run: python flight_monitor.py
         env:
-          AVIASALES_TOKEN:      ${{ secrets.AVIASALES_TOKEN }}
           GMAIL_ADDRESS:        ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD:   ${{ secrets.GMAIL_APP_PASSWORD }}
           NOTIFY_EMAIL:         ${{ secrets.NOTIFY_EMAIL }}

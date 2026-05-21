@@ -1,1 +1,1 @@
-# No third-party dependencies — uses only Python stdlib (urllib, smtplib, json)
+fast-flights==2.2.0
