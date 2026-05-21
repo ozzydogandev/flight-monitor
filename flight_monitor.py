@@ -262,6 +262,8 @@ def main() -> None:
         sys.exit(1)
 
     print(f"[INFO] Raw results: {len(raw)}")
+    if raw:
+        print(f"[DEBUG] Sample item: {raw[0]}")
     deals = parse_deals(raw)
     print(f"[INFO] Matching deals (US, ≤${MAX_PRICE}, ≥{MIN_NIGHTS} nights): {len(deals)}")
 
