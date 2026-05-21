@@ -195,6 +195,12 @@ def format_email(deals: list[dict], max_price: int) -> tuple[str, str]:
     return subject, "\n".join(lines)
 
 
+def add_unsubscribe_footer(body: str, email: str) -> str:
+    base_url = os.getenv("APP_URL", "https://flight-monitor-ui.vercel.app")
+    unsubscribe_url = f"{base_url}/api/unsubscribe?email={urllib.parse.quote(email)}"
+    return body + f"\n\n─────────────────────────────\nDon't want these alerts? Unsubscribe: {unsubscribe_url}"
+
+
 def send_email(to: str, subject: str, body: str) -> None:
     gmail_address = os.environ["GMAIL_ADDRESS"]
     app_password  = os.environ["GMAIL_APP_PASSWORD"]
@@ -292,11 +298,11 @@ def main() -> None:
         if len(new_deals) <= 3:
             for deal in new_deals:
                 subject, body = format_email([deal], max_price)
-                send_email(email, subject, body)
+                send_email(email, subject, add_unsubscribe_footer(body, email))
                 emails_sent += 1
         else:
             subject, body = format_email(new_deals, max_price)
-            send_email(email, subject, body)
+            send_email(email, subject, add_unsubscribe_footer(body, email))
             emails_sent += 1
 
     save_seen(seen)
