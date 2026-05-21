@@ -275,9 +275,17 @@ def main() -> None:
             if deal["price"] > max_price:
                 continue
             key = deal_key(email, deal["destination"], deal["depart"], deal["return"])
-            if seen.get(key) != today_str:
-                new_deals.append(deal)
-                seen[key] = today_str
+            entry = seen.get(key)
+            if isinstance(entry, dict):
+                already_seen_today = entry.get("date") == today_str
+                prev_price = entry.get("price", float("inf"))
+                price_dropped_10pct = deal["price"] <= prev_price * 0.90
+                if already_seen_today and not price_dropped_10pct:
+                    continue
+            elif entry == today_str:
+                continue
+            new_deals.append(deal)
+            seen[key] = {"date": today_str, "price": deal["price"]}
 
         if not new_deals:
             print(f"[INFO] No new deals for {email}")
