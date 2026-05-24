@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 """
 Flight Deal Monitor — IAD → Anywhere in the US
 Uses fast-flights to scrape real-time Google Flights prices.
+Parallel requests via ThreadPoolExecutor for fast runs (~2-3 min).
 """
 
 import json
@@ -11,6 +13,7 @@ import smtplib
 import sys
 import time
 import urllib.parse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -20,19 +23,15 @@ from fast_flights import FlightData, Passengers, get_flights
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 
-ORIGIN   = "IAD"
-MIN_NIGHTS = 2
-CURRENCY = "USD"
+ORIGIN      = "IAD"
+CURRENCY    = "USD"
+MAX_WORKERS = 8  # parallel flight searches
 
 SEEN_FILE = Path(__file__).parent / "seen_deals.json"
-
-WEEKEND_DEPART_DAYS = {3, 4}   # Thu, Fri
-WEEKEND_RETURN_DAYS = {6, 0}   # Sun, Mon
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "")
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
 
-# Top US destinations from IAD
 DESTINATIONS = [
     "ATL", "BOS", "ORD", "DFW", "DEN", "JFK", "SFO", "SEA",
     "LAS", "MCO", "CLT", "MIA", "IAH", "MSP", "FLL", "SLC",
@@ -72,29 +71,23 @@ AIRPORT_NAMES = {
 # ── Date helpers ───────────────────────────────────────────────────────────────
 
 def candidate_trips() -> list[tuple[date, date]]:
-    """Return (depart, return) pairs to check — spread across short and long windows."""
     today = date.today()
     trips = []
-
-    # Short window: next 4 weeks — check every Friday and every Monday
     for offset in range(7, 29):
         d = today + timedelta(days=offset)
-        if d.weekday() in (0, 4):  # Mon or Fri
+        if d.weekday() in (0, 4):
             for nights in (2, 3, 4, 5, 6):
                 trips.append((d, d + timedelta(days=nights)))
-
-    # Long window: 5–12 weeks out — check every other Friday
     for offset in range(35, 85, 14):
         d = today + timedelta(days=offset)
-        d += timedelta(days=(4 - d.weekday()) % 7)  # snap to nearest Friday
+        d += timedelta(days=(4 - d.weekday()) % 7)
         for nights in (2, 3, 4, 5, 6):
             trips.append((d, d + timedelta(days=nights)))
-
     return trips
 
 
 def is_weekend_trip(depart: date, ret: date) -> bool:
-    return depart.weekday() in WEEKEND_DEPART_DAYS and ret.weekday() in WEEKEND_RETURN_DAYS
+    return depart.weekday() in {3, 4} and ret.weekday() in {6, 0}
 
 
 # ── Flight search ──────────────────────────────────────────────────────────────
@@ -123,6 +116,29 @@ def get_cheapest_price(origin: str, destination: str, depart: date, ret: date) -
     except Exception as e:
         print(f"[WARN] {origin}→{destination} {depart}: {e}")
         return None
+
+
+def check_route(args: tuple) -> dict | None:
+    """Worker: check one (destination, depart, ret) combo. Returns deal dict or None."""
+    destination, depart, ret, max_price_global = args
+    time.sleep(random.uniform(0.1, 0.4))  # small polite stagger per worker
+    price = get_cheapest_price(ORIGIN, destination, depart, ret)
+    if price is None or price > max_price_global:
+        return None
+    return {
+        "destination": destination,
+        "depart":      depart,
+        "return":      ret,
+        "nights":      (ret - depart).days,
+        "price":       price,
+        "is_weekend":  is_weekend_trip(depart, ret),
+        "book_url":    (
+            f"https://www.kayak.com/flights/"
+            f"{ORIGIN}-{destination}/"
+            f"{depart.strftime('%Y-%m-%d')}/"
+            f"{ret.strftime('%Y-%m-%d')}/1adults"
+        ),
+    }
 
 
 # ── Subscribers ────────────────────────────────────────────────────────────────
@@ -162,7 +178,6 @@ def deal_key(email: str, destination: str, depart: date, ret: date) -> str:
 def format_email(deals: list[dict], max_price: int) -> tuple[str, str]:
     weekend_only = all(d["is_weekend"] for d in deals)
     count = len(deals)
-
     if count == 1:
         d = deals[0]
         tag = "[Weekend] " if d["is_weekend"] else ""
@@ -181,13 +196,11 @@ def format_email(deals: list[dict], max_price: int) -> tuple[str, str]:
     ]
     for d in deals:
         weekend_tag = " [WEEKEND]" if d["is_weekend"] else ""
-        from_city = AIRPORT_NAMES.get(ORIGIN, ORIGIN)
-        to_city   = AIRPORT_NAMES.get(d['destination'], d['destination'])
         lines += [
             "─" * 50,
             f"  Route:   {ORIGIN} → {d['destination']}{weekend_tag}",
-            f"  From:    {from_city}",
-            f"  To:      {to_city}",
+            f"  From:    {AIRPORT_NAMES.get(ORIGIN, ORIGIN)}",
+            f"  To:      {AIRPORT_NAMES.get(d['destination'], d['destination'])}",
             f"  Depart:  {d['depart'].strftime('%A, %B %-d %Y')}",
             f"  Return:  {d['return'].strftime('%A, %B %-d %Y')}",
             f"  Stay:    {d['nights']} nights",
@@ -195,7 +208,6 @@ def format_email(deals: list[dict], max_price: int) -> tuple[str, str]:
             f"  Book:    {d['book_url']}",
             "",
         ]
-
     lines.append("Happy travels! ✈")
     return subject, "\n".join(lines)
 
@@ -207,21 +219,16 @@ def add_unsubscribe_footer(body: str, email: str) -> str:
 
 
 def send_email(to: str, subject: str, body: str) -> None:
-    gmail_address = os.environ["GMAIL_ADDRESS"]
-    app_password  = os.environ["GMAIL_APP_PASSWORD"]
-
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
-    msg["From"]    = gmail_address
+    msg["From"]    = os.environ["GMAIL_ADDRESS"]
     msg["To"]      = to
     msg.attach(MIMEText(body, "plain"))
-
     with smtplib.SMTP("smtp.gmail.com", 587) as server:
         server.ehlo()
         server.starttls()
-        server.login(gmail_address, app_password)
-        server.sendmail(gmail_address, to, msg.as_string())
-
+        server.login(os.environ["GMAIL_ADDRESS"], os.environ["GMAIL_APP_PASSWORD"])
+        server.sendmail(os.environ["GMAIL_ADDRESS"], to, msg.as_string())
     print(f"[OK] Email → {to}: {subject}")
 
 
@@ -250,75 +257,72 @@ def main() -> None:
         send_test_email()
         return
 
-    # Fetch subscribers
+    print("[flight-monitor] Run started")
+
     if SUPABASE_URL and SUPABASE_KEY:
         try:
             subscribers = fetch_subscribers()
-            print(f"[INFO] Subscribers: {len(subscribers)}")
+            print(f"[flight-monitor] Subscribers: {len(subscribers)}")
         except Exception as e:
             print(f"[WARN] Supabase error: {e} — falling back to NOTIFY_EMAIL")
-            subscribers = [{"email": os.environ["NOTIFY_EMAIL"], "max_price": 60, "origin": ORIGIN}]
+            notify = os.getenv("NOTIFY_EMAIL")
+            if notify:
+                subscribers = [{"email": notify, "max_price": 60, "origin": ORIGIN}]
+            else:
+                print("[flight-monitor] No fallback email — skipping")
+                return
     else:
-        subscribers = [{"email": os.environ["NOTIFY_EMAIL"], "max_price": 60, "origin": ORIGIN}]
+        notify = os.getenv("NOTIFY_EMAIL")
+        if not notify:
+            print("[flight-monitor] No Supabase and no NOTIFY_EMAIL — skipping")
+            return
+        subscribers = [{"email": notify, "max_price": 60, "origin": ORIGIN}]
 
     if not subscribers:
-        print("[INFO] No subscribers.")
+        print("[flight-monitor] No subscribers — exiting")
         return
 
     max_price_global = max(int(s["max_price"]) for s in subscribers)
-    trips = candidate_trips()
-    destinations = DESTINATIONS[:]
+    trips            = candidate_trips()
+    destinations     = DESTINATIONS[:]
     random.shuffle(destinations)
-    seen = load_seen()
-    today_str = date.today().isoformat()
-    emails_sent = 0
+    seen             = load_seen()
+    today_str        = date.today().isoformat()
+    emails_sent      = 0
 
-    print(f"[INFO] Checking {len(destinations)} destinations × {len(trips)} date pairs...")
+    # Build all (destination, depart, ret) tasks
+    tasks = [
+        (dest, depart, ret, max_price_global)
+        for dest in destinations
+        for depart, ret in trips
+    ]
+    print(f"[flight-monitor] {len(tasks)} route/date combos — {MAX_WORKERS} parallel workers")
 
+    # Parallel search
     found_deals: list[dict] = []
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = {executor.submit(check_route, t): t for t in tasks}
+        for future in as_completed(futures):
+            result = future.result()
+            if result:
+                print(f"[DEAL] {ORIGIN}→{result['destination']} "
+                      f"{result['depart']}–{result['return']}: ${result['price']:.0f}")
+                found_deals.append(result)
 
-    for destination in destinations:
-        for depart, ret in trips:
-            nights = (ret - depart).days
-            price = get_cheapest_price(ORIGIN, destination, depart, ret)
-            time.sleep(0.5)  # be polite to Google
-
-            if price is None or price > max_price_global:
-                continue
-
-            print(f"[DEAL] {ORIGIN}→{destination} {depart}–{ret}: ${price:.0f}")
-            found_deals.append({
-                "destination": destination,
-                "depart":      depart,
-                "return":      ret,
-                "nights":      nights,
-                "price":       price,
-                "is_weekend":  is_weekend_trip(depart, ret),
-                "book_url":    (
-                    f"https://www.kayak.com/flights/"
-                    f"{ORIGIN}-{destination}/"
-                    f"{depart.strftime('%Y-%m-%d')}/"
-                    f"{ret.strftime('%Y-%m-%d')}/1adults"
-                ),
-            })
-
-    print(f"[INFO] Total deals found under ${max_price_global}: {len(found_deals)}")
+    print(f"[flight-monitor] Total deals ≤ ${max_price_global}: {len(found_deals)}")
 
     for sub in subscribers:
         email     = sub["email"]
         max_price = int(sub["max_price"])
-
         new_deals = []
+
         for deal in found_deals:
             if deal["price"] > max_price:
                 continue
-            key = deal_key(email, deal["destination"], deal["depart"], deal["return"])
+            key   = deal_key(email, deal["destination"], deal["depart"], deal["return"])
             entry = seen.get(key)
             if isinstance(entry, dict):
-                already_seen_today = entry.get("date") == today_str
-                prev_price = entry.get("price", float("inf"))
-                price_dropped_10pct = deal["price"] <= prev_price * 0.90
-                if already_seen_today and not price_dropped_10pct:
+                if entry.get("date") == today_str and deal["price"] > entry.get("price", 0) * 0.90:
                     continue
             elif entry == today_str:
                 continue
@@ -326,7 +330,7 @@ def main() -> None:
             seen[key] = {"date": today_str, "price": deal["price"]}
 
         if not new_deals:
-            print(f"[INFO] No new deals for {email}")
+            print(f"[flight-monitor] No new deals for {email}")
             continue
 
         if len(new_deals) <= 3:
@@ -340,7 +344,7 @@ def main() -> None:
             emails_sent += 1
 
     save_seen(seen)
-    print(f"[INFO] Done. Emails sent: {emails_sent}")
+    print(f"[flight-monitor] Done. Emails sent: {emails_sent}")
 
 
 if __name__ == "__main__":
