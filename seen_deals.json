@@ -2085,7 +2085,7 @@
   },
   "ozzydoganjunk@gmail.com_FLL_2026-06-29_2026-07-01": {
     "date": "2026-06-14",
-    "price": 155.0
+    "price": 119.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-06-29_2026-07-03": {
     "date": "2026-06-14",
@@ -2097,7 +2097,7 @@
   },
   "ozzydoganjunk@gmail.com_FLL_2026-06-29_2026-07-04": {
     "date": "2026-06-14",
-    "price": 190.0
+    "price": 155.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-07-17_2026-07-19": {
     "date": "2026-06-12",
@@ -2708,8 +2708,8 @@
     "price": 198.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-06-26_2026-07-01": {
-    "date": "2026-06-13",
-    "price": 178.0
+    "date": "2026-06-14",
+    "price": 184.0
   },
   "ozzydoganjunk@gmail.com_TPA_2026-07-10_2026-07-14": {
     "date": "2026-06-12",
@@ -3198,5 +3198,9 @@
   "ozzydoganjunk@gmail.com_FLL_2026-06-26_2026-07-02": {
     "date": "2026-06-14",
     "price": 193.0
+  },
+  "ozzydoganjunk@gmail.com_MIA_2026-07-10_2026-07-16": {
+    "date": "2026-06-14",
+    "price": 199.0
   }
 }
