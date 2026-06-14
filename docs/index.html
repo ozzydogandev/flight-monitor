@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Connect Four</title>
+<style>
+:root {
+  --red: #ff4757;
+  --yellow: #ffd32a;
+  --bg: #1a1a2e;
+  --panel: #16213e;
+  --accent: #0f3460;
+  --empty: #0b0b1f;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: #fff;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  user-select: none;
+}
+
+.screen {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+[hidden] { display: none !important; }
+
+h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: -1px;
+}
+.sub {
+  color: #7a8fa6;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.15s;
+  letter-spacing: 0.3px;
+}
+.btn:active { transform: scale(0.96); }
+.btn-red   { background: var(--red);    color: #fff; }
+.btn-blue  { background: var(--accent); color: #fff; }
+.btn-ghost {
+  background: transparent;
+  color: #7a8fa6;
+  border: 2px solid #2a3a50;
+}
+.btn:disabled { opacity: 0.45; pointer-events: none; }
+
+.sep { color: #3a4a5a; font-size: 0.85rem; width: 100%; text-align: center; }
+
+input {
+  width: 100%;
+  padding: 15px;
+  background: var(--accent);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1.5rem;
+  text-align: center;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  outline: none;
+  font-weight: 800;
+}
+input::placeholder {
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+  color: #4a5a6a;
+  font-weight: 400;
+}
+input:focus { border-color: var(--red); }
+
+.code-box {
+  background: var(--accent);
+  border-radius: 20px;
+  padding: 22px 40px;
+  font-size: 3.2rem;
+  font-weight: 900;
+  letter-spacing: 12px;
+  color: var(--yellow);
+  text-align: center;
+}
+
+.err { color: #ff6b6b; font-size: 0.88rem; text-align: center; min-height: 1.2em; }
+
+.spinner {
+  width: 30px; height: 30px;
+  border: 3px solid rgba(255,255,255,0.12);
+  border-top-color: rgba(255,255,255,0.6);
+  border-radius: 50%;
+  animation: spin 0.85s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── STATUS ── */
+#status {
+  width: 100%;
+  max-width: 420px;
+  padding: 13px 20px;
+  border-radius: 14px;
+  background: var(--panel);
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.05rem;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ── BOARD ── */
+#board-wrap {
+  width: 100%;
+  max-width: 420px;
+  background: var(--panel);
+  border-radius: 22px;
+  padding: 10px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 6px;
+  aspect-ratio: 7/6;
+}
+
+.cell {
+  border-radius: 50%;
+  background: var(--empty);
+  aspect-ratio: 1;
+  transition: background 0.12s;
+}
+.cell.p1 { background: var(--red); }
+.cell.p2 { background: var(--yellow); }
+.cell.win {
+  animation: pop 0.65s ease infinite alternate;
+}
+.cell.p1.win { box-shadow: 0 0 0 3px var(--red);    }
+.cell.p2.win { box-shadow: 0 0 0 3px var(--yellow);  }
+
+@keyframes pop {
+  from { transform: scale(0.85); }
+  to   { transform: scale(1.08); }
+}
+
+/* column hover dots (desktop) */
+#col-hint {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  padding: 5px 0 2px;
+}
+.h-dot {
+  height: 6px;
+  border-radius: 3px;
+  background: transparent;
+  transition: background 0.1s;
+}
+.h-dot.on { background: rgba(255,255,255,0.2); }
+</style>
+</head>
+<body>
+
+<!-- ── LOBBY ── -->
+<div id="s-lobby" class="screen">
+  <h1>Connect Four</h1>
+  <p class="sub">2-player · real-time · mobile</p>
+  <button class="btn btn-red" id="create-btn" onclick="createGame()">Create Game</button>
+  <div class="sep">— or join a friend's game —</div>
+  <input id="code-in" type="text" maxlength="4" placeholder="4-letter room code"
+         autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"
+         oninput="this.value=this.value.toUpperCase()">
+  <button class="btn btn-blue" onclick="joinGame()">Join Game</button>
+  <div class="err" id="lerr"></div>
+</div>
+
+<!-- ── WAITING (HOST) ── -->
+<div id="s-wait" class="screen" hidden>
+  <h1>Game Ready!</h1>
+  <p class="sub">Share this code with your friend</p>
+  <div class="code-box" id="code-show">----</div>
+  <button class="btn btn-blue" onclick="copyCode()">Copy Code</button>
+  <div class="spinner"></div>
+  <p class="sub">Waiting for friend to join…</p>
+</div>
+
+<!-- ── GAME ── -->
+<div id="s-game" class="screen" hidden>
+  <div id="status">Connecting…</div>
+  <div id="board-wrap">
+    <div id="board"></div>
+    <div id="col-hint"></div>
+  </div>
+  <button class="btn btn-ghost" id="again-btn" hidden onclick="voteAgain()">Play Again</button>
+  <button class="btn btn-ghost" style="font-size:0.9rem;padding:11px" onclick="location.reload()">← Leave Game</button>
+</div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+/* ── Constants ───────────────────────────── */
+const ROWS = 6, COLS = 7;
+// Unambiguous uppercase letters (no O, I, L, 0, 1)
+const ABC = 'ACDEFGHJKMNPQRTUVWXY';
+
+const PEER_CFG = {
+  debug: 0,
+  config: { iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+  ]}
+};
+
+/* ── State ───────────────────────────────── */
+let board, turn, me, over, peer, conn, code, votes;
+
+/* ── Screen helpers ─────────────────────── */
+function show(id) {
+  ['lobby','wait','game'].forEach(s =>
+    document.getElementById('s-'+s).hidden = s !== id
+  );
+}
+function lerr(msg) { document.getElementById('lerr').textContent = msg; }
+
+/* ── Code helpers ───────────────────────── */
+function genCode() {
+  return Array.from({length:4}, () => ABC[Math.floor(Math.random()*ABC.length)]).join('');
+}
+
+function copyCode() {
+  navigator.clipboard?.writeText(code).catch(()=>{});
+  const btn = document.querySelector('#s-wait .btn-blue');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Copied!';
+  setTimeout(() => btn.textContent = orig, 2000);
+}
+
+/* ── Create game (host) ──────────────────── */
+function createGame() {
+  const btn = document.getElementById('create-btn');
+  btn.disabled = true;
+  code = genCode();
+
+  peer = new Peer('c4-' + code, PEER_CFG);
+
+  peer.on('open', () => {
+    document.getElementById('code-show').textContent = code;
+    show('wait');
+  });
+
+  peer.on('connection', c => {
+    conn = c;
+    me = 1;
+    wireConn();
+    newGame();
+    show('game');
+    setStatus('Your turn', 1);
+  });
+
+  peer.on('error', e => {
+    btn.disabled = false;
+    if (e.type === 'unavailable-id') {
+      // Room code taken, retry silently
+      createGame();
+    } else {
+      lerr('Could not create room. Try again.');
+    }
+  });
+}
+
+/* ── Join game (guest) ──────────────────── */
+function joinGame() {
+  const raw = document.getElementById('code-in').value.trim().toUpperCase();
+  if (!raw) { lerr('Enter the 4-letter room code.'); return; }
+  lerr('');
+
+  peer = new Peer(undefined, PEER_CFG);
+  me = 2;
+
+  peer.on('open', () => {
+    conn = peer.connect('c4-' + raw, { reliable: true });
+    wireConn();
+    conn.on('open', () => {
+      newGame();
+      show('game');
+      setStatus("Friend's turn", 1);
+    });
+  });
+
+  peer.on('error', e => {
+    peer.destroy();
+    lerr(e.type === 'peer-unavailable'
+      ? 'Room not found — check the code and try again.'
+      : 'Connection failed. Try again.');
+  });
+}
+
+/* ── Wire data/close events ─────────────── */
+function wireConn() {
+  conn.on('data', msg => {
+    if (msg.t === 'move')  applyMove(msg.r, msg.c, msg.p);
+    if (msg.t === 'again') { votes++; checkAgain(); }
+  });
+  conn.on('close', () => {
+    if (!over) setStatus('Friend disconnected.');
+  });
+}
+
+/* ── Game logic ─────────────────────────── */
+function newGame() {
+  board = Array.from({length:ROWS}, () => Array(COLS).fill(0));
+  turn = 1; over = false; votes = 0;
+  document.getElementById('again-btn').hidden = true;
+  renderBoard();
+}
+
+function dropCol(c) {
+  if (over || turn !== me) return;
+  let r = -1;
+  for (let i = ROWS-1; i >= 0; i--) if (!board[i][c]) { r = i; break; }
+  if (r < 0) return;
+  conn.send({ t:'move', r, c, p:me });
+  applyMove(r, c, me);
+}
+
+function applyMove(r, c, p) {
+  board[r][c] = p;
+  turn = p === 1 ? 2 : 1;
+  const win = findWin(p);
+  if (win) {
+    over = true;
+    renderBoard(win);
+    setStatus(p === me ? 'You win! 🎉' : 'Friend wins! 🎉', p);
+    document.getElementById('again-btn').hidden = false;
+  } else if (board[0].every(v => v)) {
+    over = true;
+    renderBoard();
+    setStatus("It's a draw! 🤝");
+    document.getElementById('again-btn').hidden = false;
+  } else {
+    renderBoard();
+    setStatus(turn === me ? 'Your turn' : "Friend's turn", turn);
+  }
+}
+
+function findWin(p) {
+  const dirs = [[0,1],[1,0],[1,1],[1,-1]];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (board[r][c] !== p) continue;
+      for (const [dr,dc] of dirs) {
+        const cells = [[r,c]];
+        for (let k = 1; k < 4; k++) {
+          const nr=r+dr*k, nc=c+dc*k;
+          if (nr<0||nr>=ROWS||nc<0||nc>=COLS||board[nr][nc]!==p) break;
+          cells.push([nr,nc]);
+        }
+        if (cells.length === 4) return cells;
+      }
+    }
+  }
+  return null;
+}
+
+/* ── Play Again ─────────────────────────── */
+function voteAgain() {
+  votes++;
+  document.getElementById('again-btn').hidden = true;
+  conn.send({ t:'again' });
+  checkAgain();
+}
+
+function checkAgain() {
+  if (votes < 2) {
+    setStatus('Waiting for friend to play again…');
+  } else {
+    newGame();
+    setStatus(turn === me ? 'Your turn' : "Friend's turn", turn);
+  }
+}
+
+/* ── Rendering ──────────────────────────── */
+function renderBoard(winCells) {
+  const el = document.getElementById('board');
+  el.innerHTML = '';
+  const ws = winCells ? new Set(winCells.map(([r,c])=>r+','+c)) : null;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const d = document.createElement('div');
+      let cls = 'cell';
+      if (board[r][c] === 1) cls += ' p1';
+      else if (board[r][c] === 2) cls += ' p2';
+      if (ws?.has(r+','+c)) cls += ' win';
+      d.className = cls;
+      el.appendChild(d);
+    }
+  }
+  renderHint(-1);
+}
+
+function renderHint(col) {
+  const el = document.getElementById('col-hint');
+  el.innerHTML = '';
+  for (let c = 0; c < COLS; c++) {
+    const d = document.createElement('div');
+    d.className = 'h-dot' + (c === col ? ' on' : '');
+    el.appendChild(d);
+  }
+}
+
+function setStatus(msg, player) {
+  const el = document.getElementById('status');
+  const icon = player === 1 ? '🔴 ' : player === 2 ? '🟡 ' : '';
+  el.textContent = icon + msg;
+  if (player === 1) {
+    el.style.background = 'rgba(255,71,87,0.2)';
+    el.style.color = '#ff8a96';
+  } else if (player === 2) {
+    el.style.background = 'rgba(255,211,42,0.15)';
+    el.style.color = '#ffd32a';
+  } else {
+    el.style.background = '';
+    el.style.color = '';
+  }
+}
+
+/* ── Board interaction ──────────────────── */
+const boardWrap = document.getElementById('board-wrap');
+
+function colFromX(clientX) {
+  const rect = document.getElementById('board').getBoundingClientRect();
+  return Math.max(0, Math.min(COLS-1, Math.floor((clientX - rect.left) / rect.width * COLS)));
+}
+
+boardWrap.addEventListener('click', e => dropCol(colFromX(e.clientX)));
+boardWrap.addEventListener('mousemove', e => renderHint(colFromX(e.clientX)));
+boardWrap.addEventListener('mouseleave', () => renderHint(-1));
+</script>
+</body>
+</html>
