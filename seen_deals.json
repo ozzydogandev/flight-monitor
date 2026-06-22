@@ -1200,7 +1200,7 @@
     "price": 175.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-07-03_2026-07-09": {
-    "date": "2026-06-21",
+    "date": "2026-06-22",
     "price": 175.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-07-17_2026-07-21": {
@@ -1284,7 +1284,7 @@
     "price": 161.0
   },
   "ozzydoganjunk@gmail.com_JFK_2026-07-31_2026-08-05": {
-    "date": "2026-06-21",
+    "date": "2026-06-22",
     "price": 161.0
   },
   "ozzydoganjunk@gmail.com_JFK_2026-07-31_2026-08-06": {
@@ -1768,7 +1768,7 @@
     "price": 167.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-08-14_2026-08-19": {
-    "date": "2026-06-21",
+    "date": "2026-06-22",
     "price": 167.0
   },
   "ozzydoganjunk+ftest@gmail.com_FLL_2026-07-31_2026-08-03": {
@@ -1836,7 +1836,7 @@
     "price": 198.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-07-31_2026-08-05": {
-    "date": "2026-06-21",
+    "date": "2026-06-22",
     "price": 167.0
   },
   "ozzydoganjunk+ftest@gmail.com_BOS_2026-07-03_2026-07-08": {
@@ -2384,7 +2384,7 @@
     "price": 167.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-08-28_2026-09-02": {
-    "date": "2026-06-21",
+    "date": "2026-06-22",
     "price": 167.0
   },
   "ozzydoganjunk@gmail.com_DFW_2026-08-14_2026-08-18": {
@@ -2720,8 +2720,8 @@
     "price": 147.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-07-10_2026-07-13": {
-    "date": "2026-06-20",
-    "price": 88.0
+    "date": "2026-06-22",
+    "price": 124.0
   },
   "ozzydoganjunk@gmail.com_MCO_2026-07-10_2026-07-12": {
     "date": "2026-06-21",
@@ -3268,7 +3268,7 @@
     "price": 153.0
   },
   "ozzydoganjunk@gmail.com_JFK_2026-07-13_2026-07-16": {
-    "date": "2026-06-21",
+    "date": "2026-06-22",
     "price": 165.0
   },
   "ozzydoganjunk@gmail.com_LAS_2026-07-24_2026-07-30": {
@@ -3804,7 +3804,7 @@
     "price": 167.0
   },
   "ozzydoganjunk@gmail.com_JFK_2026-09-11_2026-09-17": {
-    "date": "2026-06-21",
+    "date": "2026-06-22",
     "price": 199.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-09-11_2026-09-16": {
@@ -3898,5 +3898,9 @@
   "ozzydoganjunk@gmail.com_BOS_2026-07-13_2026-07-18": {
     "date": "2026-06-21",
     "price": 197.0
+  },
+  "ozzydoganjunk@gmail.com_JFK_2026-07-20_2026-07-24": {
+    "date": "2026-06-22",
+    "price": 165.0
   }
 }
