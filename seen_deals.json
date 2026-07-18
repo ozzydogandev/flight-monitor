@@ -2557,7 +2557,7 @@
   },
   "ozzydoganjunk@gmail.com_LAS_2026-08-28_2026-09-01": {
     "date": "2026-07-18",
-    "price": 135.0
+    "price": 90.0
   },
   "ozzydoganjunk@gmail.com_LAS_2026-08-28_2026-08-30": {
     "date": "2026-07-18",
@@ -3120,8 +3120,8 @@
     "price": 95.0
   },
   "ozzydoganjunk@gmail.com_LAS_2026-08-07_2026-08-13": {
-    "date": "2026-07-16",
-    "price": 170.0
+    "date": "2026-07-18",
+    "price": 175.0
   },
   "ozzydoganjunk@gmail.com_LAS_2026-08-21_2026-08-27": {
     "date": "2026-07-17",
@@ -3664,7 +3664,7 @@
     "price": 88.0
   },
   "oguzhandoganusa@gmail.com_LAS_2026-08-28_2026-09-01": {
-    "date": "2026-07-10",
+    "date": "2026-07-18",
     "price": 90.0
   },
   "fsaadetyildirim@gmail.com_ATL_2026-07-31_2026-08-04": {
@@ -3688,7 +3688,7 @@
     "price": 88.0
   },
   "fsaadetyildirim@gmail.com_LAS_2026-08-28_2026-09-01": {
-    "date": "2026-07-10",
+    "date": "2026-07-18",
     "price": 90.0
   },
   "ozzydoganjunk@gmail.com_TPA_2026-09-11_2026-09-13": {
@@ -3776,7 +3776,7 @@
     "price": 88.0
   },
   "cerennnsimsek@gmail.com_LAS_2026-08-28_2026-09-01": {
-    "date": "2026-07-10",
+    "date": "2026-07-18",
     "price": 90.0
   },
   "oguzhandoganusa@gmail.com_FLL_2026-08-14_2026-08-17": {
@@ -4536,8 +4536,8 @@
     "price": 182.0
   },
   "ozzydoganjunk@gmail.com_LAS_2026-07-27_2026-07-30": {
-    "date": "2026-07-07",
-    "price": 135.0
+    "date": "2026-07-18",
+    "price": 190.0
   },
   "ozzydoganjunk@gmail.com_LAS_2026-07-27_2026-07-29": {
     "date": "2026-07-07",
@@ -4581,15 +4581,15 @@
   },
   "ozzydoganjunk@gmail.com_FLL_2026-07-27_2026-07-31": {
     "date": "2026-07-18",
-    "price": 192.0
+    "price": 172.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-07-27_2026-08-01": {
     "date": "2026-07-18",
     "price": 176.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-07-27_2026-08-02": {
-    "date": "2026-07-17",
-    "price": 180.0
+    "date": "2026-07-18",
+    "price": 192.0
   },
   "ozzydoganjunk@gmail.com_MCO_2026-07-27_2026-07-30": {
     "date": "2026-07-15",
@@ -6121,7 +6121,7 @@
   },
   "ozzydoganjunk@gmail.com_FLL_2026-08-10_2026-08-14": {
     "date": "2026-07-18",
-    "price": 155.0
+    "price": 118.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-08-10_2026-08-13": {
     "date": "2026-07-18",
@@ -6325,23 +6325,23 @@
   },
   "ozzydoganjunk@gmail.com_ATL_2026-10-09_2026-10-13": {
     "date": "2026-07-18",
-    "price": 108.0
+    "price": 81.0
   },
   "ozzydoganjunk@gmail.com_ATL_2026-10-09_2026-10-12": {
     "date": "2026-07-18",
-    "price": 166.0
+    "price": 126.0
   },
   "ozzydoganjunk@gmail.com_ATL_2026-10-09_2026-10-11": {
     "date": "2026-07-18",
-    "price": 136.0
+    "price": 96.0
   },
   "ozzydoganjunk@gmail.com_ATL_2026-10-09_2026-10-14": {
     "date": "2026-07-18",
-    "price": 108.0
+    "price": 76.0
   },
   "ozzydoganjunk@gmail.com_ATL_2026-10-09_2026-10-15": {
     "date": "2026-07-18",
-    "price": 108.0
+    "price": 76.0
   },
   "ozzydoganjunk@gmail.com_DFW_2026-09-11_2026-09-13": {
     "date": "2026-07-18",
@@ -6386,5 +6386,57 @@
   "cerennnsimsek@gmail.com_LAS_2026-08-10_2026-08-12": {
     "date": "2026-07-18",
     "price": 90.0
+  },
+  "oguzhandoganusa@gmail.com_ATL_2026-10-09_2026-10-11": {
+    "date": "2026-07-18",
+    "price": 96.0
+  },
+  "oguzhandoganusa@gmail.com_ATL_2026-10-09_2026-10-14": {
+    "date": "2026-07-18",
+    "price": 76.0
+  },
+  "oguzhandoganusa@gmail.com_ATL_2026-10-09_2026-10-15": {
+    "date": "2026-07-18",
+    "price": 76.0
+  },
+  "oguzhandoganusa@gmail.com_ATL_2026-10-09_2026-10-13": {
+    "date": "2026-07-18",
+    "price": 81.0
+  },
+  "fsaadetyildirim@gmail.com_ATL_2026-10-09_2026-10-11": {
+    "date": "2026-07-18",
+    "price": 96.0
+  },
+  "fsaadetyildirim@gmail.com_ATL_2026-10-09_2026-10-14": {
+    "date": "2026-07-18",
+    "price": 76.0
+  },
+  "fsaadetyildirim@gmail.com_ATL_2026-10-09_2026-10-15": {
+    "date": "2026-07-18",
+    "price": 76.0
+  },
+  "fsaadetyildirim@gmail.com_ATL_2026-10-09_2026-10-13": {
+    "date": "2026-07-18",
+    "price": 81.0
+  },
+  "ozzydoganjunk@gmail.com_DFW_2026-10-09_2026-10-12": {
+    "date": "2026-07-18",
+    "price": 199.0
+  },
+  "cerennnsimsek@gmail.com_ATL_2026-10-09_2026-10-11": {
+    "date": "2026-07-18",
+    "price": 96.0
+  },
+  "cerennnsimsek@gmail.com_ATL_2026-10-09_2026-10-14": {
+    "date": "2026-07-18",
+    "price": 76.0
+  },
+  "cerennnsimsek@gmail.com_ATL_2026-10-09_2026-10-15": {
+    "date": "2026-07-18",
+    "price": 76.0
+  },
+  "cerennnsimsek@gmail.com_ATL_2026-10-09_2026-10-13": {
+    "date": "2026-07-18",
+    "price": 81.0
   }
 }
