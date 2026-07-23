@@ -4169,7 +4169,7 @@
   },
   "ozzydoganjunk@gmail.com_BOS_2026-09-11_2026-09-14": {
     "date": "2026-07-23",
-    "price": 134.0
+    "price": 112.0
   },
   "ozzydoganjunk@gmail.com_LAS_2026-07-20_2026-07-25": {
     "date": "2026-06-27",
@@ -6690,5 +6690,13 @@
   "cerennnsimsek@gmail.com_BOS_2026-08-17_2026-08-22": {
     "date": "2026-07-23",
     "price": 97.0
+  },
+  "ozzydoganjunk@gmail.com_BOS_2026-10-09_2026-10-14": {
+    "date": "2026-07-23",
+    "price": 177.0
+  },
+  "ozzydoganjunk@gmail.com_BOS_2026-10-09_2026-10-15": {
+    "date": "2026-07-23",
+    "price": 177.0
   }
 }
