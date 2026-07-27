@@ -6444,16 +6444,16 @@
     "price": 96.0
   },
   "oguzhandoganusa@gmail.com_FLL_2026-08-17_2026-08-19": {
-    "date": "2026-07-21",
-    "price": 99.0
+    "date": "2026-07-27",
+    "price": 98.0
   },
   "fsaadetyildirim@gmail.com_MCO_2026-08-17_2026-08-19": {
     "date": "2026-07-20",
     "price": 96.0
   },
   "fsaadetyildirim@gmail.com_FLL_2026-08-17_2026-08-19": {
-    "date": "2026-07-21",
-    "price": 99.0
+    "date": "2026-07-27",
+    "price": 98.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-08-17_2026-08-22": {
     "date": "2026-07-27",
@@ -6497,7 +6497,7 @@
   },
   "ozzydoganjunk@gmail.com_LAS_2026-08-17_2026-08-22": {
     "date": "2026-07-27",
-    "price": 164.0
+    "price": 112.0
   },
   "ozzydoganjunk@gmail.com_MCO_2026-08-17_2026-08-22": {
     "date": "2026-07-27",
@@ -6532,8 +6532,8 @@
     "price": 128.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-08-17_2026-08-23": {
-    "date": "2026-07-26",
-    "price": 191.0
+    "date": "2026-07-27",
+    "price": 198.0
   },
   "ozzydoganjunk@gmail.com_CLT_2026-08-17_2026-08-22": {
     "date": "2026-07-27",
@@ -6544,8 +6544,8 @@
     "price": 96.0
   },
   "cerennnsimsek@gmail.com_FLL_2026-08-17_2026-08-19": {
-    "date": "2026-07-21",
-    "price": 99.0
+    "date": "2026-07-27",
+    "price": 98.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-08-17_2026-08-20": {
     "date": "2026-07-27",
@@ -6853,7 +6853,7 @@
   },
   "ozzydoganjunk@gmail.com_LAS_2026-08-24_2026-08-26": {
     "date": "2026-07-27",
-    "price": 145.0
+    "price": 100.0
   },
   "ozzydoganjunk@gmail.com_LAS_2026-08-24_2026-08-29": {
     "date": "2026-07-27",
@@ -7014,5 +7014,17 @@
   "cerennnsimsek@gmail.com_FLL_2026-08-24_2026-08-26": {
     "date": "2026-07-27",
     "price": 99.0
+  },
+  "oguzhandoganusa@gmail.com_LAS_2026-08-24_2026-08-26": {
+    "date": "2026-07-27",
+    "price": 100.0
+  },
+  "fsaadetyildirim@gmail.com_LAS_2026-08-24_2026-08-26": {
+    "date": "2026-07-27",
+    "price": 100.0
+  },
+  "cerennnsimsek@gmail.com_LAS_2026-08-24_2026-08-26": {
+    "date": "2026-07-27",
+    "price": 100.0
   }
 }
