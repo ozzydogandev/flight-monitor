@@ -1429,15 +1429,15 @@
   },
   "ozzydoganjunk@gmail.com_ATL_2026-08-14_2026-08-18": {
     "date": "2026-07-29",
-    "price": 188.0
+    "price": 169.0
   },
   "ozzydoganjunk@gmail.com_ATL_2026-08-14_2026-08-19": {
     "date": "2026-07-29",
-    "price": 182.0
+    "price": 163.0
   },
   "ozzydoganjunk@gmail.com_ATL_2026-08-14_2026-08-20": {
     "date": "2026-07-29",
-    "price": 188.0
+    "price": 169.0
   },
   "ozzydoganjunk@gmail.com_LAX_2026-07-03_2026-07-08": {
     "date": "2026-05-26",
@@ -3036,8 +3036,8 @@
     "price": 187.0
   },
   "ozzydoganjunk@gmail.com_DFW_2026-08-21_2026-08-23": {
-    "date": "2026-06-14",
-    "price": 188.0
+    "date": "2026-07-29",
+    "price": 198.0
   },
   "ozzydoganjunk@gmail.com_DFW_2026-08-21_2026-08-27": {
     "date": "2026-07-17",
@@ -3116,8 +3116,8 @@
     "price": 158.0
   },
   "ozzydoganjunk@gmail.com_LAS_2026-08-21_2026-08-25": {
-    "date": "2026-07-28",
-    "price": 189.0
+    "date": "2026-07-29",
+    "price": 155.0
   },
   "ozzydoganjunk@gmail.com_LAS_2026-08-07_2026-08-13": {
     "date": "2026-07-24",
@@ -5709,15 +5709,15 @@
   },
   "ozzydoganjunk@gmail.com_DFW_2026-10-02_2026-10-07": {
     "date": "2026-07-29",
-    "price": 176.0
+    "price": 155.0
   },
   "ozzydoganjunk@gmail.com_DFW_2026-10-02_2026-10-06": {
     "date": "2026-07-29",
-    "price": 176.0
+    "price": 155.0
   },
   "ozzydoganjunk@gmail.com_DFW_2026-10-02_2026-10-05": {
     "date": "2026-07-29",
-    "price": 176.0
+    "price": 155.0
   },
   "ozzydoganjunk@gmail.com_TPA_2026-08-21_2026-08-26": {
     "date": "2026-07-17",
@@ -7181,7 +7181,7 @@
   },
   "ozzydoganjunk@gmail.com_DFW_2026-10-02_2026-10-04": {
     "date": "2026-07-29",
-    "price": 169.0
+    "price": 148.0
   },
   "ozzydoganjunk@gmail.com_DFW_2026-10-16_2026-10-21": {
     "date": "2026-07-29",
@@ -7262,5 +7262,13 @@
   "cerennnsimsek@gmail.com_MCO_2026-10-16_2026-10-20": {
     "date": "2026-07-29",
     "price": 98.0
+  },
+  "ozzydoganjunk@gmail.com_LAS_2026-09-18_2026-09-21": {
+    "date": "2026-07-29",
+    "price": 158.0
+  },
+  "ozzydoganjunk@gmail.com_DFW_2026-10-02_2026-10-08": {
+    "date": "2026-07-29",
+    "price": 198.0
   }
 }
