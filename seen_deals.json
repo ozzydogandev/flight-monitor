@@ -4357,7 +4357,7 @@
   },
   "ozzydoganjunk@gmail.com_ATL_2026-09-18_2026-09-20": {
     "date": "2026-08-12",
-    "price": 147.0
+    "price": 132.0
   },
   "ozzydoganjunk@gmail.com_ATL_2026-09-18_2026-09-21": {
     "date": "2026-08-12",
@@ -5904,8 +5904,8 @@
     "price": 151.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-09-18_2026-09-20": {
-    "date": "2026-08-08",
-    "price": 151.0
+    "date": "2026-08-12",
+    "price": 181.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-09-18_2026-09-24": {
     "date": "2026-08-12",
@@ -7824,7 +7824,7 @@
     "price": 178.0
   },
   "ozzydoganjunk@gmail.com_LAX_2026-10-16_2026-10-19": {
-    "date": "2026-08-08",
+    "date": "2026-08-12",
     "price": 178.0
   },
   "ozzydoganjunk@gmail.com_LAX_2026-10-16_2026-10-21": {
@@ -9013,23 +9013,23 @@
   },
   "ozzydoganjunk@gmail.com_BOS_2026-10-30_2026-11-03": {
     "date": "2026-08-12",
-    "price": 177.0
+    "price": 157.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-10-30_2026-11-04": {
     "date": "2026-08-12",
-    "price": 177.0
+    "price": 157.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-10-30_2026-11-02": {
     "date": "2026-08-12",
-    "price": 187.0
+    "price": 167.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-10-30_2026-11-01": {
-    "date": "2026-08-08",
-    "price": 180.0
+    "date": "2026-08-12",
+    "price": 192.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-10-30_2026-11-05": {
     "date": "2026-08-12",
-    "price": 177.0
+    "price": 157.0
   },
   "ozzydoganjunk@gmail.com_TPA_2026-10-30_2026-11-01": {
     "date": "2026-08-12",
@@ -10078,5 +10078,21 @@
   "ozzydoganjunk@gmail.com_BNA_2026-10-16_2026-10-20": {
     "date": "2026-08-12",
     "price": 191.0
+  },
+  "ozzydoganjunk@gmail.com_IAH_2026-08-31_2026-09-02": {
+    "date": "2026-08-12",
+    "price": 152.0
+  },
+  "ozzydoganjunk@gmail.com_IAH_2026-08-31_2026-09-03": {
+    "date": "2026-08-12",
+    "price": 152.0
+  },
+  "ozzydoganjunk@gmail.com_IAH_2026-08-31_2026-09-05": {
+    "date": "2026-08-12",
+    "price": 176.0
+  },
+  "ozzydoganjunk@gmail.com_IAH_2026-09-07_2026-09-09": {
+    "date": "2026-08-12",
+    "price": 198.0
   }
 }
