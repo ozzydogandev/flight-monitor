@@ -7804,12 +7804,12 @@
     "price": 96.0
   },
   "ozzydoganjunk@gmail.com_DFW_2026-10-16_2026-10-20": {
-    "date": "2026-08-12",
-    "price": 185.0
+    "date": "2026-08-14",
+    "price": 198.0
   },
   "ozzydoganjunk@gmail.com_DFW_2026-10-16_2026-10-22": {
-    "date": "2026-08-12",
-    "price": 186.0
+    "date": "2026-08-14",
+    "price": 198.0
   },
   "ozzydoganjunk@gmail.com_ORD_2026-10-02_2026-10-06": {
     "date": "2026-08-14",
@@ -10210,5 +10210,9 @@
   "ozzydoganjunk@gmail.com_DFW_2026-09-18_2026-09-24": {
     "date": "2026-08-14",
     "price": 178.0
+  },
+  "ozzydoganjunk@gmail.com_DFW_2026-09-04_2026-09-07": {
+    "date": "2026-08-14",
+    "price": 198.0
   }
 }
