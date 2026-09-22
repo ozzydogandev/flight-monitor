@@ -8905,7 +8905,7 @@
   },
   "ozzydoganjunk@gmail.com_DFW_2026-10-30_2026-11-02": {
     "date": "2026-09-22",
-    "price": 185.0
+    "price": 159.0
   },
   "ozzydoganjunk@gmail.com_DFW_2026-10-30_2026-11-05": {
     "date": "2026-09-22",
@@ -11029,7 +11029,7 @@
   },
   "ozzydoganjunk@gmail.com_MCO_2026-11-13_2026-11-18": {
     "date": "2026-09-22",
-    "price": 87.0
+    "price": 78.0
   },
   "ozzydoganjunk@gmail.com_BOS_2026-11-13_2026-11-17": {
     "date": "2026-09-22",
@@ -12429,7 +12429,7 @@
   },
   "oguzhandoganusa@gmail.com_MCO_2026-11-13_2026-11-18": {
     "date": "2026-09-22",
-    "price": 87.0
+    "price": 78.0
   },
   "oguzhandoganusa@gmail.com_MCO_2026-11-13_2026-11-17": {
     "date": "2026-09-11",
@@ -12493,7 +12493,7 @@
   },
   "fsaadetyildirim@gmail.com_MCO_2026-11-13_2026-11-18": {
     "date": "2026-09-22",
-    "price": 87.0
+    "price": 78.0
   },
   "fsaadetyildirim@gmail.com_MCO_2026-11-13_2026-11-17": {
     "date": "2026-09-11",
@@ -12577,7 +12577,7 @@
   },
   "cerennnsimsek@gmail.com_MCO_2026-11-13_2026-11-18": {
     "date": "2026-09-22",
-    "price": 87.0
+    "price": 78.0
   },
   "cerennnsimsek@gmail.com_MCO_2026-11-13_2026-11-17": {
     "date": "2026-09-11",
@@ -14241,7 +14241,7 @@
   },
   "ozzydoganjunk@gmail.com_MIA_2026-10-19_2026-10-24": {
     "date": "2026-09-22",
-    "price": 191.0
+    "price": 171.0
   },
   "ozzydoganjunk@gmail.com_FLL_2026-10-19_2026-10-21": {
     "date": "2026-09-22",
@@ -14386,5 +14386,21 @@
   "ozzydoganjunk@gmail.com_BNA_2026-11-13_2026-11-18": {
     "date": "2026-09-22",
     "price": 178.0
+  },
+  "oguzhandoganusa@gmail.com_MCO_2026-11-13_2026-11-16": {
+    "date": "2026-09-22",
+    "price": 99.0
+  },
+  "fsaadetyildirim@gmail.com_MCO_2026-11-13_2026-11-16": {
+    "date": "2026-09-22",
+    "price": 99.0
+  },
+  "ozzydoganjunk@gmail.com_DEN_2026-10-19_2026-10-24": {
+    "date": "2026-09-22",
+    "price": 200.0
+  },
+  "cerennnsimsek@gmail.com_MCO_2026-11-13_2026-11-16": {
+    "date": "2026-09-22",
+    "price": 99.0
   }
 }
