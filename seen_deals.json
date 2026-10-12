@@ -10412,8 +10412,8 @@
     "price": 123.0
   },
   "ozzydoganjunk@gmail.com_DFW_2026-11-06_2026-11-12": {
-    "date": "2026-10-11",
-    "price": 132.0
+    "date": "2026-10-12",
+    "price": 128.0
   },
   "ozzydoganjunk@gmail.com_ATL_2026-11-06_2026-11-10": {
     "date": "2026-10-12",
@@ -17198,5 +17198,9 @@
   "cerennnsimsek@gmail.com_ATL_2026-12-18_2026-12-24": {
     "date": "2026-10-12",
     "price": 80.0
+  },
+  "ozzydoganjunk@gmail.com_MIA_2026-11-09_2026-11-11": {
+    "date": "2026-10-12",
+    "price": 152.0
   }
 }
