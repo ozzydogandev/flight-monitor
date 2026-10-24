@@ -12049,7 +12049,7 @@
   },
   "ozzydoganjunk@gmail.com_IAH_2026-11-13_2026-11-16": {
     "date": "2026-10-24",
-    "price": 148.0
+    "price": 121.0
   },
   "ozzydoganjunk@gmail.com_IAH_2026-11-13_2026-11-18": {
     "date": "2026-10-24",
@@ -13433,7 +13433,7 @@
   },
   "ozzydoganjunk@gmail.com_MIA_2026-12-04_2026-12-08": {
     "date": "2026-10-24",
-    "price": 177.0
+    "price": 159.0
   },
   "oguzhandoganusa@gmail.com_ATL_2026-10-12_2026-10-17": {
     "date": "2026-09-30",
@@ -16708,7 +16708,7 @@
     "price": 74.0
   },
   "ozzydoganjunk@gmail.com_MSY_2027-01-01_2027-01-07": {
-    "date": "2026-10-16",
+    "date": "2026-10-24",
     "price": 181.0
   },
   "ozzydoganjunk@gmail.com_CLT_2027-01-01_2027-01-07": {
@@ -17420,8 +17420,8 @@
     "price": 161.0
   },
   "ozzydoganjunk@gmail.com_DEN_2026-11-09_2026-11-13": {
-    "date": "2026-10-23",
-    "price": 181.0
+    "date": "2026-10-24",
+    "price": 179.0
   },
   "ozzydoganjunk@gmail.com_MIA_2026-11-06_2026-11-09": {
     "date": "2026-10-16",
@@ -19662,5 +19662,13 @@
   "hegebulut10@gmail.com_ATL_2027-01-15_2027-01-20": {
     "date": "2026-10-24",
     "price": 48.0
+  },
+  "ozzydoganjunk@gmail.com_IAH_2027-01-01_2027-01-05": {
+    "date": "2026-10-24",
+    "price": 196.0
+  },
+  "ozzydoganjunk@gmail.com_IAH_2027-01-15_2027-01-19": {
+    "date": "2026-10-24",
+    "price": 196.0
   }
 }
